@@ -1,0 +1,12 @@
+# kitchen_environment/config.yaml
+
+rtsp_sources:
+  - id: Kitchen_1
+    zone: storage
+    url: "rtsp://192.168.0.101/stream1"
+    interval: 15
+
+  - id: Kitchen_2
+    zone: prep
+    url: "rtsp://192.168.0.102/stream1"
+    interval: 30
