@@ -1,4 +1,5 @@
 import json
+import queue
 import time
 import logging
 import uuid
@@ -270,12 +271,11 @@ class ActionDetector(threading.Thread):
     def run(self):
         while not self.stop_event.is_set():
             try:
-                pkt = self.in_queue.get(timeout=1.0)
-            except Exception:
+                pkt = self.in_queue.get(timeout=0.25)
+            except queue.Empty:
                 continue
             try:
                 camera_id = pkt["camera_id"]
-                print(camera_id)
                 # Проверка на то, находится ли камера в списке, камер, где возможно действие
                 if self.action_possible_on_cam(camera_id):
                     cam_data = self.analise_motion(pkt)
@@ -285,12 +285,14 @@ class ActionDetector(threading.Thread):
                 else:
                     self.is_action_possible(pkt)
             except Exception:
-                print("Error!")
                 continue
 
     def action_possible_on_cam(self, cam: str):
         """Проверяет возможно ли действие на данной камере"""
         return cam in self.__action_possible_cameras
+
+    def stop(self):
+        self.stop_event.set()
 
     # =================== тут приватные функции =================== #
 

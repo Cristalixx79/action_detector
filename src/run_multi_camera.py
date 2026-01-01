@@ -186,7 +186,12 @@ finally:
         w.join(timeout=2.0)
     perception.join(timeout=2.0)
 
+    # останов action detector
+    try:
+        action_detector.stop()
+    except Exception:
+        logging.exception("Failed to stop action_detector cleanly")
+
     cv2.destroyAllWindows()
     print("[INFO] All stopped cleanly.")
     sys.exit(0)
-

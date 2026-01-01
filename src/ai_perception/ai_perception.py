@@ -518,5 +518,3 @@ class PerceptionWorker(threading.Thread):
                 self._observer.join(timeout=1.0)
             except Exception:
                 pass
-
-

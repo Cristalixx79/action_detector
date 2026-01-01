@@ -3,12 +3,14 @@ import os
 import threading
 import time
 from datetime import datetime
+from ..surface_detector.detector import SurfaceDetector
 
 
 class SnapshotCollector:
     def __init__(self, interval_sec: int = 30, base_dir: str = "../../../res/snapshots"):
         self.interval = interval_sec
         self.base_dir = base_dir
+        self.surface_detector = SurfaceDetector()
 
         os.makedirs(base_dir, exist_ok=True)
 
@@ -50,12 +52,13 @@ class SnapshotCollector:
 
             for cam_id, frame in self.frames.items():
                 try:
-                    folder = os.path.join("C:/Temp", cam_id)
+                    folder = os.path.join("../../res/snapshots", cam_id)
                     os.makedirs(folder, exist_ok=True)
 
                     timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
                     filename = os.path.join(folder, f"{timestamp}.jpg")
                     cv2.imwrite(filename, frame)
+                    self.surface_detector.run_model_on_image(filename, cam_id)
 
                     print(f"[Snapshot] Saved for {cam_id} -> {filename}")
 
